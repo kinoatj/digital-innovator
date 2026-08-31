@@ -8,13 +8,17 @@
 <style>
   :root {
     --bg: #ffffff;
-    --bg-soft: #f4f7f6;
-    --text: #1f2328;
-    --text-muted: #57606a;
-    --accent: #2f8f77;
-    --border: #d8dee4;
-    --code-bg: #f6f8fa;
-    --shadow: 0 1px 3px rgba(0,0,0,.08);
+    --bg-soft: #f1f6fa;
+    --text: #16232e;
+    --text-muted: #55677a;
+    --kani: #d0402c;          /* 越前がにの朱 */
+    --kani-deep: #a82f20;
+    --umi: #1d4e79;           /* 日本海の藍 */
+    --umi-light: #2f6f9f;
+    --nami: #dceaf3;          /* 波のあわい藍 */
+    --border: #cfdde6;
+    --code-bg: #f4f8fb;
+    --shadow: 0 1px 3px rgba(29,78,121,.12);
   }
   * { box-sizing: border-box; }
   body {
@@ -26,27 +30,77 @@
     -webkit-text-size-adjust: 100%;
   }
   .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 96px; }
+
+  /* 日本海の藍から越前がにの朱へ */
   header.hero {
-    background: linear-gradient(135deg, #2f8f77, #246e91);
+    position: relative;
+    background: linear-gradient(115deg, #0f3a60 0%, #1d4e79 38%, #7a4a49 78%, #c03a27 100%);
     color: #fff;
-    padding: 56px 20px 44px;
-    margin-bottom: 40px;
+    padding: 60px 20px 72px;
+    margin-bottom: 44px;
+    overflow: hidden;
   }
-  header.hero .inner { max-width: 760px; margin: 0 auto; }
-  header.hero h1 { font-size: 1.9rem; line-height: 1.5; margin: 0 0 12px; }
-  header.hero p { margin: 0; opacity: .92; }
+  header.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='28' viewBox='0 0 120 28'%3E%3Cpath d='M0 20q15-12 30 0t30 0 30 0 30 0' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E");
+    opacity: .13;
+    pointer-events: none;
+  }
+  /* 波打ち際 */
+  header.hero::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 34px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 34' preserveAspectRatio='none'%3E%3Cpath d='M0 18c100 0 150-15 250-15s150 15 250 15 150-15 250-15 150 15 250 15 150-15 200-15v35H0z' fill='%23ffffff'/%3E%3C/svg%3E") repeat-x bottom;
+    background-size: 1200px 34px;
+  }
+  header.hero .inner { position: relative; max-width: 760px; margin: 0 auto; }
+  header.hero h1 {
+    font-size: 1.9rem;
+    line-height: 1.5;
+    margin: 0 0 12px;
+    text-shadow: 0 1px 8px rgba(0,0,0,.22);
+  }
+  header.hero p { margin: 0; opacity: .94; }
+
   h2 {
+    position: relative;
     font-size: 1.45rem;
     margin: 64px 0 16px;
-    padding-bottom: 10px;
-    border-bottom: 3px solid var(--accent);
+    padding-bottom: 12px;
+    color: var(--umi);
   }
-  h3 { font-size: 1.12rem; margin: 36px 0 10px; }
+  h2::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--kani) 0 104px, var(--nami) 104px);
+  }
+  h3 {
+    font-size: 1.12rem;
+    margin: 36px 0 10px;
+    padding-left: 12px;
+    border-left: 4px solid var(--kani);
+  }
   p { margin: 14px 0; }
-  a { color: #1a6f96; }
+  a { color: var(--umi); }
+  a:hover { color: var(--kani-deep); }
   ul, ol { padding-left: 1.5em; }
   li { margin: 6px 0; }
-  hr { border: 0; border-top: 1px solid var(--border); margin: 48px 0; }
+  li::marker { color: var(--umi-light); }
+
+  /* 区切りは日本海の波 */
+  hr {
+    border: 0;
+    height: 12px;
+    margin: 52px 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='12' viewBox='0 0 48 12'%3E%3Cpath d='M0 6q6-5 12 0t12 0 12 0 12 0' fill='none' stroke='%2394bad2' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center;
+  }
+
   code {
     background: var(--code-bg);
     border: 1px solid var(--border);
@@ -54,16 +108,19 @@
     padding: 1px 5px;
     font-size: .9em;
     font-family: "SFMono-Regular", Consolas, "Courier New", monospace;
+    color: #0f3a60;
   }
   pre {
     background: var(--code-bg);
     border: 1px solid var(--border);
+    border-left: 4px solid var(--umi-light);
     border-radius: 8px;
     padding: 14px 16px;
     overflow-x: auto;
     line-height: 1.7;
   }
-  pre code { background: none; border: 0; padding: 0; font-size: .88rem; }
+  pre code { background: none; border: 0; padding: 0; font-size: .88rem; color: inherit; }
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -71,7 +128,8 @@
     font-size: .95rem;
   }
   th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
-  th { background: var(--bg-soft); }
+  th { background: var(--bg-soft); color: var(--umi); border-bottom: 2px solid var(--kani); }
+
   figure { margin: 24px 0; }
   img {
     max-width: 100%;
@@ -81,8 +139,9 @@
     border-radius: 8px;
     box-shadow: var(--shadow);
   }
+
   .callout {
-    border-left: 5px solid var(--accent);
+    border-left: 5px solid var(--umi);
     background: var(--bg-soft);
     border-radius: 0 8px 8px 0;
     padding: 14px 18px;
@@ -91,40 +150,51 @@
   .callout .title { font-weight: 700; margin-bottom: 4px; }
   .callout p:first-of-type { margin-top: 0; }
   .callout p:last-child { margin-bottom: 0; }
-  .callout.important { border-color: #c94f4f; }
-  .callout.important .title { color: #a83232; }
-  .callout.warning { border-color: #d69a1e; }
-  .callout.warning .title { color: #9a6c00; }
-  .callout.note { border-color: #4a7fc1; }
-  .callout.note .title { color: #35608f; }
-  .callout.tip { border-color: #2f8f77; }
-  .callout.tip .title { color: #22705d; }
+  .callout.important { border-color: var(--kani); background: #fdf1ef; }
+  .callout.important .title { color: var(--kani-deep); }
+  .callout.warning { border-color: #c8871a; background: #fdf6e8; }
+  .callout.warning .title { color: #935f0d; }
+  .callout.note { border-color: var(--umi-light); }
+  .callout.note .title { color: #1d4e79; }
+  .callout.tip { border-color: #2e7d84; background: #eef7f7; }   /* 笏谷石の青緑 */
+  .callout.tip .title { color: #21615f; }
+
   nav.toc {
     background: var(--bg-soft);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-top: 3px solid var(--kani);
+    border-radius: 4px 4px 10px 10px;
     padding: 18px 22px;
     margin-top: 8px;
   }
-  nav.toc .title { font-weight: 700; margin-bottom: 6px; }
+  nav.toc .title { font-weight: 700; color: var(--umi); margin-bottom: 6px; }
   nav.toc ol { margin: 0; }
+  nav.toc li::marker { color: var(--kani); font-weight: 700; }
+
+  /* 海（藍）から蟹（朱）へ流れる */
   .flow {
-    background: var(--bg-soft);
+    background: linear-gradient(90deg, #eaf3f9, #fdf0ee);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 14px 16px;
     overflow-x: auto;
     font-size: .95rem;
+    color: var(--umi);
+    font-weight: 700;
   }
+
   footer {
-    border-top: 1px solid var(--border);
     margin-top: 72px;
-    padding-top: 20px;
+    padding-top: 24px;
     color: var(--text-muted);
     font-size: .9rem;
+    border-top: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='12' viewBox='0 0 48 12'%3E%3Cpath d='M0 6q6-5 12 0t12 0 12 0 12 0' fill='none' stroke='%2394bad2' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x top;
   }
+
   @media (max-width: 600px) {
     header.hero h1 { font-size: 1.45rem; }
+    header.hero { padding: 44px 20px 60px; }
     body { line-height: 1.8; }
   }
 </style>

@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GitHubとVSCodeでホームページを作って公開しよう</title>
 <style>
+  :root {
+    --kani: #d0402c;          /* 越前がにの朱 */
+    --kani-deep: #a82f20;
+    --umi: #1d4e79;           /* 日本海の藍 */
+    --umi-light: #2f6f9f;
+    --nami: #dceaf3;          /* 波のあわい藍 */
+    --border: #cfdde6;
+  }
+  * { box-sizing: border-box; }
   body {
     margin: 0;
     min-height: 100vh;
@@ -13,40 +22,64 @@
     justify-content: center;
     font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
     line-height: 1.9;
-    color: #1f2328;
-    background: #f4f7f6;
+    color: #16232e;
+    /* 日本海の波 */
+    background-color: #eef5fa;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='24' viewBox='0 0 96 24'%3E%3Cpath d='M0 16q12-9 24 0t24 0 24 0 24 0' fill='none' stroke='%23d3e6f2' stroke-width='2'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, #f7fbfd, #e6f0f7);
     padding: 32px 20px;
   }
   main {
+    position: relative;
     max-width: 560px;
     width: 100%;
     background: #fff;
-    border: 1px solid #d8dee4;
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 40px 32px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    box-shadow: 0 6px 24px rgba(29,78,121,.12);
+    overflow: hidden;
+  }
+  /* 藍から朱へ、天面の帯 */
+  main::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #0f3a60, var(--umi) 35%, var(--kani));
   }
   h1 {
+    position: relative;
     font-size: 1.5rem;
     line-height: 1.6;
     margin: 0 0 8px;
     padding-bottom: 12px;
-    border-bottom: 3px solid #2f8f77;
+    color: var(--umi);
   }
-  p { color: #57606a; margin: 16px 0 28px; }
+  h1::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--kani) 0 88px, var(--nami) 88px);
+  }
+  p { color: #55677a; margin: 16px 0 28px; }
   a.button {
     display: inline-block;
-    background: #2f8f77;
+    background: var(--umi);
     color: #fff;
     text-decoration: none;
     padding: 12px 24px;
     border-radius: 8px;
     font-weight: 700;
   }
-  a.button:hover { background: #26765f; }
-  ul { padding-left: 1.3em; margin: 28px 0 0; }
+  a.button:hover { background: var(--kani); }
+  ul { padding-left: 1.4em; margin: 0; }
   li { margin: 6px 0; }
-  a { color: #1a6f96; }
+  li::marker { color: var(--kani); }
+  a { color: var(--umi); font-weight: 700; }
+  a:hover { color: var(--kani-deep); }
 </style>
 </head>
 <body>
