@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHubとVSCodeでホームページを作って公開しよう</title>
+<meta name="description" content="GitHubに登録して、VSCodeでホームページを書いて、GitHub Pagesで公開するまでの手順書です。">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f4f7f6;
+    --text: #1f2328;
+    --text-muted: #57606a;
+    --accent: #2f8f77;
+    --border: #d8dee4;
+    --code-bg: #f6f8fa;
+    --shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+    line-height: 1.9;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 96px; }
+  header.hero {
+    background: linear-gradient(135deg, #2f8f77, #246e91);
+    color: #fff;
+    padding: 56px 20px 44px;
+    margin-bottom: 40px;
+  }
+  header.hero .inner { max-width: 760px; margin: 0 auto; }
+  header.hero h1 { font-size: 1.9rem; line-height: 1.5; margin: 0 0 12px; }
+  header.hero p { margin: 0; opacity: .92; }
+  h2 {
+    font-size: 1.45rem;
+    margin: 64px 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--accent);
+  }
+  h3 { font-size: 1.12rem; margin: 36px 0 10px; }
+  p { margin: 14px 0; }
+  a { color: #1a6f96; }
+  ul, ol { padding-left: 1.5em; }
+  li { margin: 6px 0; }
+  hr { border: 0; border-top: 1px solid var(--border); margin: 48px 0; }
+  code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 5px;
+    font-size: .9em;
+    font-family: "SFMono-Regular", Consolas, "Courier New", monospace;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+  pre code { background: none; border: 0; padding: 0; font-size: .88rem; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: .95rem;
+  }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  figure { margin: 24px 0; }
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+  }
+  .callout {
+    border-left: 5px solid var(--accent);
+    background: var(--bg-soft);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 24px 0;
+  }
+  .callout .title { font-weight: 700; margin-bottom: 4px; }
+  .callout p:first-of-type { margin-top: 0; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout.important { border-color: #c94f4f; }
+  .callout.important .title { color: #a83232; }
+  .callout.warning { border-color: #d69a1e; }
+  .callout.warning .title { color: #9a6c00; }
+  .callout.note { border-color: #4a7fc1; }
+  .callout.note .title { color: #35608f; }
+  .callout.tip { border-color: #2f8f77; }
+  .callout.tip .title { color: #22705d; }
+  nav.toc {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-top: 8px;
+  }
+  nav.toc .title { font-weight: 700; margin-bottom: 6px; }
+  nav.toc ol { margin: 0; }
+  .flow {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: .95rem;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    margin-top: 72px;
+    padding-top: 20px;
+    color: var(--text-muted);
+    font-size: .9rem;
+  }
+  @media (max-width: 600px) {
+    header.hero h1 { font-size: 1.45rem; }
+    body { line-height: 1.8; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="inner">
+    <h1>GitHubとVSCodeでホームページを作って公開しよう</h1>
+    <p>登録から公開まで、9ステップの手順書</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<p>ソースコード共有サイトのGitHubに登録して、グループを作って、プログラミングするソフトのVSCodeをインストールして自分のホームページを公開しましょう。</p>
+
+<p>完成するとこんなアドレスでホームページが公開されます。</p>
+
+<p><a href="https://kinoatj.github.io/github-pages-test/">https://kinoatj.github.io/github-pages-test/</a></p>
+
+<pre><code>https://（グループの名前）.github.io/（作ったフォルダの名前）/</code></pre>
+
+<p>GitHubでのホームページの公開には３つの道具を使います。</p>
+
+<table>
+  <thead>
+    <tr><th>道具</th><th>何をするもの</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>VSCode</td><td>自分のパソコンで、コードを書くソフト</td></tr>
+    <tr><td>Git</td><td>ソースコードの履歴を管理するソフト</td></tr>
+    <tr><td>GitHub</td><td>インターネット上にコードを置いておく場所</td></tr>
+  </tbody>
+</table>
+
+<p>全体の流れはこんなかんじ</p>
+
+<div class="flow">VSCodeで書く　→　Gitで記録する　→　GitHubに送る　→　GitHubがホームページとして公開する</div>
+
+<p>自分のパソコンでコードを書いて、GitHubに送る。これをくり返すのが、プログラマーの毎日の作業です。</p>
+
+<nav class="toc">
+  <div class="title">目次</div>
+  <ol>
+    <li><a href="#step1">GitHubにアカウントを作る</a></li>
+    <li><a href="#step2">グループ（Organization）を作る</a></li>
+    <li><a href="#step3">ホームページの置き場所（リポジトリ）を作る</a></li>
+    <li><a href="#step4">VSCodeとGitをインストールする</a></li>
+    <li><a href="#step5">GitHubのフォルダを自分のパソコンに持ってくる（クローン）</a></li>
+    <li><a href="#step6">ホームページの中身を書く</a></li>
+    <li><a href="#step7">書いたものをGitHubに送る</a></li>
+    <li><a href="#step8">GitHub Pagesで世界に公開する</a></li>
+    <li><a href="#step9">直して、更新する</a></li>
+  </ol>
+</nav>
+
+<hr>
+
+<h2 id="step1">STEP 1：GitHubにアカウントを作る</h2>
+
+<h3>やること</h3>
+<ol>
+  <li>Chromeで <a href="https://github.com/">https://github.com/</a> を開く</li>
+  <li>右上の Sign up をクリック</li>
+  <li>Continue with Google をクリック</li>
+  <li>Googleでアカウントを選択</li>
+  <li>Usernameを決める（日本語は使えない）</li>
+  <li>Create Account をクリック</li>
+</ol>
+
+<figure><img src="images/img-162345.png" alt="GitHubのトップページでSign upをクリック" loading="lazy"></figure>
+<figure><img src="images/img-162358.png" alt="Continue with Googleをクリック" loading="lazy"></figure>
+<figure><img src="images/img-162410.png" alt="Googleでアカウントを選択" loading="lazy"></figure>
+<figure><img src="images/img-162440.png" alt="Usernameを決める画面" loading="lazy"></figure>
+<figure><img src="images/img-162503.png" alt="Create Accountをクリック" loading="lazy"></figure>
+
+<hr>
+
+<h2 id="step2">STEP 2：グループ（Organization）を作る</h2>
+
+<p>GitHubには、Organizationというグループの機能があります。<br>
+チームで1つのものを作るとき、「個人のもの」ではなく「チームのもの」として置いておける場所です。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>GitHubにログインした状態で、右上の丸いアイコンをクリック</li>
+  <li>Settings を選ぶ</li>
+  <li>左のメニューの「Access」というかたまりの中の Organizations をクリック</li>
+  <li>「Organizations」の見出しの横にある New organization をクリック</li>
+  <li>無料のプラン（Free）を選ぶ</li>
+  <li>グループの名前とメールアドレスを入力する</li>
+  <li>ここで友達を招待することもできる</li>
+</ol>
+
+<figure><img src="images/img-162658.png" alt="右上のアイコンからSettingsを開く" loading="lazy"></figure>
+<figure><img src="images/img-162711.png" alt="左メニューのOrganizations" loading="lazy"></figure>
+<figure><img src="images/img-162747.png" alt="New organizationをクリック" loading="lazy"></figure>
+<figure><img src="images/img-162825.png" alt="無料プラン（Free）を選ぶ" loading="lazy"></figure>
+<figure><img src="images/img-162837.png" alt="グループ名とメールアドレスを入力" loading="lazy"></figure>
+
+<h3>友達をグループに入れる</h3>
+<ol>
+  <li>作ったグループのページを開く</li>
+  <li>上のタブの People をクリック</li>
+  <li>Invite member をクリックして、相手のUsernameかメールアドレスを入力</li>
+</ol>
+
+<p>招待された人が承認すると、メンバーになります。</p>
+
+<figure><img src="images/img-165255.png" alt="PeopleタブとInvite member" loading="lazy"></figure>
+<figure><img src="images/img-165302.png" alt="Usernameかメールアドレスを入力して招待" loading="lazy"></figure>
+
+<hr>
+
+<h2 id="step3">STEP 3：ホームページの置き場所（リポジトリ）を作る</h2>
+
+<p>いよいよホームページ用のフォルダを作ります。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>グループのページを開く</li>
+  <li>New repository（緑色のボタン、または「Repositories」タブの中）をクリック</li>
+  <li>次のように入れる
+    <ul>
+      <li>Repository name：<code>kino-homepage</code>（好きな名前でOK。半角英数とハイフンだけにしてください）</li>
+      <li>Description：<code>はじめてのホームページ</code>（空でもOK）</li>
+      <li>Public / Private：Public を選ぶ</li>
+      <li>Add a README file：チェックを入れる</li>
+    </ul>
+  </li>
+  <li>Create repository をクリック</li>
+</ol>
+
+<div class="callout important">
+  <div class="title">なぜPublicなの？</div>
+  <p>Public（公開）は「中身が誰でも見られる」という意味です。ちょっと不安に感じるかもしれませんが、無料プランでホームページを公開するにはPublicが必要です。</p>
+  <p>つまり、書いたコードも全世界に見えます。だからこそ、パスワードや個人情報をコードの中に絶対に書かないでください。</p>
+</div>
+
+<figure><img src="images/img-162856.png" alt="New repositoryの入力画面" loading="lazy"></figure>
+<figure><img src="images/img-162924.png" alt="作成されたリポジトリ" loading="lazy"></figure>
+
+<p>これで、インターネット側の準備は完了です。ここから自分のパソコン側を用意します。</p>
+
+<hr>
+
+<h2 id="step4">STEP 4：VSCodeとGitをインストールする</h2>
+
+<h3>4-1. Gitをインストールする</h3>
+
+<p>VSCodeだけでは、GitHubにファイルを送れません。裏で動くGitが必要です。</p>
+
+<ol>
+  <li><a href="https://git-scm.com/install/windows">https://git-scm.com/install/windows</a> を開く</li>
+  <li>「Git for Windows/x64 Setup」をクリックしてダウンロード</li>
+  <li>ダウンロードした <code>.exe</code> ファイルをダブルクリック</li>
+  <li>インストール画面がたくさん出てきますが、すべて「Next」を押していけばOKです。最後に「Install」を押します</li>
+</ol>
+
+<div class="callout note">
+  <div class="title">選択肢が多すぎて不安になるところ</div>
+  <p>Gitのインストーラは、ふだん見ないような英語の選択肢を10画面くらい出してきます。全部そのままで問題ありません。ここは深く考えずに進んでください。</p>
+</div>
+
+<figure><img src="images/img-163006.png" alt="Git for Windowsのダウンロードページ" loading="lazy"></figure>
+
+<h3>4-2. VSCodeをインストールする</h3>
+<ol>
+  <li><a href="https://code.visualstudio.com/">https://code.visualstudio.com/</a> を開く</li>
+  <li>Download for Windows をクリック</li>
+  <li>ダブルクリックして、案内にしたがって進める</li>
+</ol>
+
+<figure><img src="images/img-163132.png" alt="VSCodeのダウンロードページ" loading="lazy"></figure>
+
+<h3>4-3. VSCodeを日本語にする</h3>
+
+<p>初めて起動すると英語です。日本語にしましょう。</p>
+
+<ol>
+  <li>左端のアイコンが並んだ列（アクティビティバー）で、四角が4つ並んだアイコン（拡張機能 / Extensions）をクリック</li>
+  <li>検索ボックスに <code>Japanese</code> と入力</li>
+  <li>「Japanese Language Pack for Visual Studio Code」の Install をクリック</li>
+  <li>右下に「再起動しますか？」と出るので Change Language and Restart をクリック</li>
+</ol>
+
+<p>日本語になりました。ここから先の説明は日本語表示を前提にします。</p>
+
+<figure><img src="images/img-163223.png" alt="拡張機能でJapanese Language Packをインストール" loading="lazy"></figure>
+
+<h3>4-4. 自分の名前をGitに教える</h3>
+
+<p>Gitは「誰がこの記録を作ったか」を残します。最初に1回だけ設定します。</p>
+
+<ol>
+  <li>VSCodeのメニューから ターミナル → 新しいターミナル を開く</li>
+  <li>下に出てきた黒い画面に、次の2行を1行ずつ貼り付けて Enter</li>
+</ol>
+
+<pre><code>git config --global user.name "あなたのGitHubのUsername"
+git config --global user.email "あなたのメールアドレス"</code></pre>
+
+<div class="callout tip">
+  <div class="title">メールアドレスを公開したくない場合</div>
+  <p>ここに書いたメールアドレスは、GitHub上の記録に残って他の人からも見えます。隠したい場合は、GitHubの <code>Settings → Emails</code> で「Keep my email addresses private」にチェックを入れると、<code>〇〇@users.noreply.github.com</code> という専用のアドレスがもらえます。そのアドレスを上のコマンドに使ってください。</p>
+</div>
+
+<hr>
+
+<h2 id="step5">STEP 5：GitHubのフォルダを自分のパソコンに持ってくる（クローン）</h2>
+
+<p>インターネット上にあるリポジトリを、自分のパソコンにコピーします。これをクローンと言います。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>ブラウザでSTEP 3で作ったリポジトリのページを開く</li>
+  <li>緑色の Code ボタンをクリックし、表示されたURLの右のコピーアイコンを押す
+    <ul><li><code>https://github.com/……/homepage.git</code> のようなURLです</li></ul>
+  </li>
+  <li>VSCodeに戻り、Ctrl + Shift + P を押す（上に細長い入力欄が出ます）</li>
+  <li><code>Git: クローン</code> と入力して Enter（まだ英語表示なら <code>Git: Clone</code>）</li>
+  <li>コピーしたURLを貼り付けて Enter</li>
+  <li>「どこに保存する？」と聞かれるので、<code>ドキュメント</code> などわかる場所を選ぶ</li>
+  <li>「開きますか？」と出たら 開く をクリック</li>
+</ol>
+
+<p>VSCodeの左側に <code>README.md</code> というファイルが1つ見えていれば成功です。<br>
+これで、パソコンとインターネットがつながりました。</p>
+
+<figure><img src="images/img-163430.png" alt="CodeボタンからURLをコピー" loading="lazy"></figure>
+<figure><img src="images/img-163527.png" alt="VSCodeでGit: クローンを実行" loading="lazy"></figure>
+<figure><img src="images/img-163538.png" alt="URLを貼り付ける" loading="lazy"></figure>
+<figure><img src="images/img-163614.png" alt="クローンしたフォルダを開く" loading="lazy"></figure>
+
+<h3>つまずきポイント</h3>
+<ul>
+  <li><code>Git: クローン</code> が候補に出てこない → Gitがインストールできていません。STEP 4-1をやり直して、VSCodeを一度閉じて開き直してください</li>
+  <li>サインインを求められた → 「許可」を押すとブラウザが開きます。GitHubでログインして、戻ってきたVSCodeの画面で続けてOKです</li>
+</ul>
+
+<hr>
+
+<h2 id="step6">STEP 6：ホームページの中身を書く</h2>
+
+<h3>6-1. ファイルを作る</h3>
+<ol>
+  <li>VSCodeの左側（エクスプローラー）で、フォルダ名の横の新しいファイルアイコンをクリック</li>
+  <li>ファイル名を <code>index.html</code> にして Enter</li>
+</ol>
+
+<div class="callout important">
+  <div class="title">名前は必ず index.html</div>
+  <p>ウェブの世界では、<code>index.html</code> が「そのフォルダの表紙」という決まりになっています。<code>Index.html</code> や <code>index.HTML</code>、<code>インデックス.html</code> ではダメです。全部半角小文字で入れてください。</p>
+</div>
+
+<figure><img src="images/img-164313.png" alt="index.htmlを新規作成" loading="lazy"></figure>
+
+<h3>6-2. 中身を書く</h3>
+
+<p>下のコードを、まるごとコピーして貼り付けてください。</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;はじめてのホームページ&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      font-family: sans-serif;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 32px 20px;
+      line-height: 1.8;
+      color: #222;
+    }
+    h1 {
+      border-bottom: 3px solid #4a9;
+      padding-bottom: 8px;
+    }
+    .card {
+      background: #f4f7f6;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 24px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;はじめてのホームページ&lt;/h1&gt;
+  &lt;p&gt;これは自分で作って、自分で公開したページです。&lt;/p&gt;
+
+  &lt;div class="card"&gt;
+    &lt;h2&gt;好きなもの&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;ここに好きなものを書く&lt;/li&gt;
+      &lt;li&gt;もう1つ書く&lt;/li&gt;
+      &lt;li&gt;さらに書く&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+
+  &lt;p&gt;作った日：ここに今日の日付を書く&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<p>貼り付けたら保存します。</p>
+
+<h3>6-3. 自分のパソコンで見てみる</h3>
+
+<p>ファイルを保存したら、まず自分の目で確認します。</p>
+
+<ul>
+  <li>エクスプローラー（VSCodeの左側）の <code>index.html</code> を右クリック → エクスプローラーで表示</li>
+  <li>開いたフォルダの <code>index.html</code> をダブルクリック</li>
+</ul>
+
+<p>ブラウザが開いて、さっき書いたページが表示されます。<br>
+この時点では、まだ自分のパソコンの中だけです。インターネットには出ていません。</p>
+
+<figure><img src="images/img-164352.png" alt="ブラウザで自分のindex.htmlを開いたところ" loading="lazy"></figure>
+
+<h3>6-4. 自分の言葉に書きかえる</h3>
+
+<p>ここが一番おもしろいところです。次を自由に変えてみてください。</p>
+
+<ul>
+  <li><code>&lt;h1&gt;</code> の中の文字 → ページの大見出し</li>
+  <li><code>&lt;li&gt;</code> の中の文字 → 箇条書きの1行。行を増やしても減らしてもOK</li>
+  <li><code>&lt;title&gt;</code> の中の文字 → ブラウザのタブに出る名前</li>
+  <li><code>#4a9</code> の部分 → 線の色。<code>#e57</code> や <code>#59c</code> などに変えると色が変わります</li>
+  <li>「ここに今日の日付を書く」 → 実際の日付</li>
+</ul>
+
+<p>変えたら保存して、ブラウザで F5（再読み込み）します。</p>
+
+<hr>
+
+<h2 id="step7">STEP 7：書いたものをGitHubに送る</h2>
+
+<p>自分のパソコンで書いたファイルを、インターネット側に送ります。3ステップです。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>VSCodeの左端のアイコン列で、枝が分かれたようなアイコン（ソース管理）をクリック</li>
+  <li>「変更」の中に <code>index.html</code> が出ています。ファイル名の上にマウスを乗せて、+ をクリック
+    <ul><li>→ これがステージ。「今回送るのはこれです」と選ぶ作業です</li></ul>
+  </li>
+  <li>上のメッセージ入力欄に、何をしたかを書く
+    <ul><li>例：<code>最初のページを作った</code></li></ul>
+  </li>
+  <li>コミット ボタンをクリック
+    <ul><li>→ これがコミット。パソコンの中に「この時点の記録」が保存されます</li></ul>
+  </li>
+  <li>ボタンが 変更の同期 に変わるのでクリック
+    <ul><li>→ これがプッシュ。GitHubに送られます</li></ul>
+  </li>
+</ol>
+
+<p>途中でGitHubへのサインインを求められたら、案内にしたがってブラウザでログインしてください。</p>
+
+<figure><img src="images/img-164418.png" alt="VSCodeのソース管理でステージ・コミット・同期" loading="lazy"></figure>
+
+<h3>この3つの意味をもう一度</h3>
+
+<table>
+  <thead>
+    <tr><th>作業</th><th>何をしている</th><th>たとえると</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>ステージ（+）</td><td>送るファイルを選ぶ</td><td>段ボールに入れる</td></tr>
+    <tr><td>コミット</td><td>記録を作る</td><td>ガムテープで封をして、中身をメモする</td></tr>
+    <tr><td>同期（プッシュ）</td><td>GitHubに送る</td><td>宅配便に出す</td></tr>
+  </tbody>
+</table>
+
+<p>ブラウザでGitHubのリポジトリを再読み込みしてみてください。<code>index.html</code> が増えていれば成功です。</p>
+
+<hr>
+
+<h2 id="step8">STEP 8：GitHub Pagesで世界に公開する</h2>
+
+<p>ここまでで、ファイルはGitHubに置いてあります。でもまだ「ホームページ」にはなっていません。<br>
+最後に、公開のスイッチを入れます。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>ブラウザでリポジトリのページを開く</li>
+  <li>上のタブの Settings をクリック</li>
+  <li>左のメニューの「Code, planning, and automation」の中の Pages をクリック</li>
+  <li>「Build and deployment」の Source で Deploy from a branch を選ぶ</li>
+  <li>Branch のところで main を選び、フォルダは / (root) のまま</li>
+  <li>Save をクリック</li>
+</ol>
+
+<p>これで完了です。</p>
+
+<figure><img src="images/img-164655.png" alt="GitHub PagesのBuild and deployment設定" loading="lazy"></figure>
+
+<h3>URLを確認する</h3>
+
+<p>保存して少し待ってから、同じPagesの画面を再読み込みしてください。上のほうにURLが表示されます。</p>
+
+<pre><code>https://（グループの名前）.github.io/（作ったフォルダの名前）/</code></pre>
+
+<div class="callout warning">
+  <div class="title">すぐには表示されません</div>
+  <p>公開の準備には数分（長いと10分ほど）かかります。開いて「404 Not Found」と出ても失敗ではありません。5分ほど待ってから、もう一度読み込んでください。</p>
+  <p>何度も試しても404のままなら、<code>index.html</code> というファイル名が正しいか（大文字が混ざっていないか）を確認してください。ここが原因の9割です。</p>
+</div>
+
+<p>表示されたら、そのURLを自分のスマホに送ってみてください。</p>
+
+<hr>
+
+<h2 id="step9">STEP 9：直して、更新する</h2>
+
+<p>公開したあとの直し方も覚えておきましょう。これがふだんの作業です。</p>
+
+<ol>
+  <li>VSCodeで <code>index.html</code> を直す</li>
+  <li>ソース管理を開いて + → メッセージを書く → コミット → 変更の同期</li>
+  <li>数分待って、公開URLを再読み込み</li>
+</ol>
+
+<p>この3ステップだけです。STEP 1〜5はもうやる必要がありません。<br>
+一度環境を作れば、あとはずっと「書く・送る」のくり返しになります。</p>
+
+<footer>
+  <p><a href="../">トップページに戻る</a> ／ <a href="https://github.com/kinoatj/digital-innovator">GitHubリポジトリ</a></p>
+</footer>
+
+</div>
+</body>
+</html>
