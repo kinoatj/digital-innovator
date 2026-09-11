@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>インストールなしでホームページを作って公開しよう（ブラウザだけ版）</title>
+<meta name="description" content="ソフトをインストールできない学校のパソコンでも、ブラウザだけでGitHub Pagesにホームページを公開する手順書です。">
+<link rel="stylesheet" href="../github-pages/style.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="inner">
+    <h1>インストールなしでホームページを作って公開しよう<br><small>ブラウザだけ版</small></h1>
+  </div>
+</header>
+
+<div class="wrap">
+
+<p>この手順書は、<strong>学校のパソコンなど、ソフトをインストールできない環境向け</strong>です。<br>
+必要なのはChromeとGoogleアカウントだけ。GitもVSCodeもパソコンに入れません。</p>
+
+<p>そのかわりに、<strong>ブラウザの中で動くVSCode</strong>（github.dev）を使います。見た目も操作もふつうのVSCodeとほとんど同じなので、あとでインストールできる環境に移っても、覚えたことはそのまま使えます。</p>
+
+<div class="callout note">
+  <div class="title">インストールできる人は</div>
+  <p>自分のパソコンにGitとVSCodeを入れられる人は、<a href="../github-pages/">GitHubとVSCodeでホームページを作って公開しよう</a>のほうを読んでください。STEP 1〜3はどちらも同じです。</p>
+</div>
+
+<p>完成するとこんなアドレスでホームページが公開されます。</p>
+
+<p><a href="https://kinoatj.github.io/github-pages-test/">https://kinoatj.github.io/github-pages-test/</a></p>
+
+<pre><code>https://（グループの名前）.github.io/（作ったフォルダの名前）/</code></pre>
+
+<p>使う道具は３つ。全部ブラウザの中にあります。</p>
+
+<table>
+  <thead>
+    <tr><th>道具</th><th>何をするもの</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Chrome</td><td>ブラウザ。すべての作業をこの中でやる</td></tr>
+    <tr><td>GitHub</td><td>インターネット上にコードを置いておく場所</td></tr>
+    <tr><td>ブラウザ版VSCode（github.dev）</td><td>ブラウザの中で動くVSCode。コードを書いて、GitHubに保存する</td></tr>
+  </tbody>
+</table>
+
+<p>全体の流れはこんなかんじ</p>
+
+<div class="flow">ブラウザ版VSCodeで書く　→　コミットしてGitHubに保存する　→　GitHubがホームページとして公開する</div>
+
+<p>ふつうのやり方では「自分のパソコンで書く → Gitで記録 → GitHubに送る」の３段階ですが、ブラウザ版では最初からGitHubの上で書いているので、「送る」がありません。そのぶん手順が少なくてすみます。</p>
+
+<nav class="toc">
+  <div class="title">目次</div>
+  <ol>
+    <li><a href="#step1">GitHubにアカウントを作る</a></li>
+    <li><a href="#step2">グループ（Organization）を作る</a></li>
+    <li><a href="#step3">ホームページの置き場所（リポジトリ）を作る</a></li>
+    <li><a href="#step4">ブラウザでVSCodeを開く</a></li>
+    <li><a href="#step5">ホームページの中身を書く</a></li>
+    <li><a href="#step6">コミットしてGitHubに保存する</a></li>
+    <li><a href="#step7">GitHub Pagesで世界に公開する</a></li>
+    <li><a href="#step8">直して、更新する</a></li>
+    <li><a href="#appendix1">おまけ：VSCodeを使わずGitHubの画面だけで書く方法</a></li>
+    <li><a href="#appendix2">おまけ：Gitはどこに行ったの？</a></li>
+  </ol>
+</nav>
+
+<hr>
+
+<h2 id="step1">STEP 1：GitHubにアカウントを作る</h2>
+
+<h3>やること</h3>
+<ol>
+  <li>Chromeで <a href="https://github.com/">https://github.com/</a> を開く</li>
+  <li>右上の Sign up をクリック</li>
+  <li>Continue with Google をクリック</li>
+  <li>Googleでアカウントを選択</li>
+  <li>Usernameを決める（日本語は使えない）</li>
+  <li>Create Account をクリック</li>
+</ol>
+
+<figure><img src="../github-pages/images/img-162345.png" alt="GitHubのトップページでSign upをクリック" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162358.png" alt="Continue with Googleをクリック" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162410.png" alt="Googleでアカウントを選択" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162440.png" alt="Usernameを決める画面" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162503.png" alt="Create Accountをクリック" loading="lazy"></figure>
+
+<hr>
+
+<h2 id="step2">STEP 2：グループ（Organization）を作る</h2>
+
+<p>GitHubには、Organizationというグループの機能があります。<br>
+チームで1つのものを作るとき、「個人のもの」ではなく「チームのもの」として置いておける場所です。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>GitHubにログインした状態で、右上の丸いアイコンをクリック</li>
+  <li>Settings を選ぶ</li>
+  <li>左のメニューの「Access」というかたまりの中の Organizations をクリック</li>
+  <li>「Organizations」の見出しの横にある New organization をクリック</li>
+  <li>無料のプラン（Free）を選ぶ</li>
+  <li>グループの名前とメールアドレスを入力する</li>
+  <li>ここで友達を招待することもできる</li>
+</ol>
+
+<figure><img src="../github-pages/images/img-162658.png" alt="右上のアイコンからSettingsを開く" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162711.png" alt="左メニューのOrganizations" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162747.png" alt="New organizationをクリック" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162825.png" alt="無料プラン（Free）を選ぶ" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162837.png" alt="グループ名とメールアドレスを入力" loading="lazy"></figure>
+
+<h3>友達をグループに入れる</h3>
+<ol>
+  <li>作ったグループのページを開く</li>
+  <li>上のタブの People をクリック</li>
+  <li>Invite member をクリックして、相手のUsernameかメールアドレスを入力</li>
+</ol>
+
+<p>招待された人が承認すると、メンバーになります。</p>
+
+<figure><img src="../github-pages/images/img-165255.png" alt="PeopleタブとInvite member" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-165302.png" alt="Usernameかメールアドレスを入力して招待" loading="lazy"></figure>
+
+<hr>
+
+<h2 id="step3">STEP 3：ホームページの置き場所（リポジトリ）を作る</h2>
+
+<p>いよいよホームページ用のフォルダを作ります。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>グループのページを開く</li>
+  <li>New repository（緑色のボタン、または「Repositories」タブの中）をクリック</li>
+  <li>次のように入れる
+    <ul>
+      <li>Repository name：<code>kino-homepage</code>（好きな名前でOK。半角英数とハイフンだけにしてください）</li>
+      <li>Description：<code>はじめてのホームページ</code>（空でもOK）</li>
+      <li>Public / Private：Public を選ぶ</li>
+      <li>Add a README file：チェックを入れる</li>
+    </ul>
+  </li>
+  <li>Create repository をクリック</li>
+</ol>
+
+<div class="callout important">
+  <div class="title">なぜPublicなの？</div>
+  <p>Public（公開）は「中身が誰でも見られる」という意味です。ちょっと不安に感じるかもしれませんが、無料プランでホームページを公開するにはPublicが必要です。</p>
+  <p>つまり、書いたコードも全世界に見えます。だからこそ、パスワードや個人情報をコードの中に絶対に書かないでください。</p>
+</div>
+
+<figure><img src="../github-pages/images/img-162856.png" alt="New repositoryの入力画面" loading="lazy"></figure>
+<figure><img src="../github-pages/images/img-162924.png" alt="作成されたリポジトリ" loading="lazy"></figure>
+
+<p>これで置き場所ができました。ふつうならここから「パソコンにソフトを入れる」のですが、この手順書ではそれをしません。次のSTEPでそのままブラウザの中に作業場所を開きます。</p>
+
+<hr>
+
+<h2 id="step4">STEP 4：ブラウザでVSCodeを開く</h2>
+
+<p>GitHubには、リポジトリをそのままVSCodeで開く機能がついています。インストールはいりません。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>ブラウザでSTEP 3で作ったリポジトリのページを開く</li>
+  <li>ページのどこか（ファイル一覧のあたり）を1回クリックしてから、キーボードの <kbd>.</kbd>（ピリオド）を1回押す</li>
+  <li>画面が切りかわって、VSCodeが開く。左側にSTEP 3で作った <code>README.md</code> が見えていれば成功</li>
+</ol>
+
+<div class="callout tip">
+  <div class="title">ピリオドを押しても何も起きないとき</div>
+  <p>日本語入力がオンになっていると「。」が入力されてしまいます。半角英数に切りかえてからもう一度押してください。</p>
+  <p>それでもダメなら、アドレスバーのURLを書きかえる方法もあります。<code>github.com</code> の部分を <code>github.dev</code> に変えて Enter を押してください。</p>
+  <pre><code>https://github.com/グループ名/kino-homepage
+　　　　　↓
+https://github.dev/グループ名/kino-homepage</code></pre>
+</div>
+
+<!-- TODO: スクリーンショット：リポジトリのページで「.」を押したあとに開くgithub.devの画面（左にREADME.mdが見えている） -->
+
+<p>はじめて開くときは「GitHubにサインインしますか？」「許可しますか？」のような確認が出ることがあります。案内にしたがって 許可 や Continue を押してください。</p>
+
+<h3>4-1. 日本語にする</h3>
+
+<p>初めて開くと英語です。ブラウザが日本語になっていれば、右下に「日本語に変更して再起動しますか？」という案内が出るので、そのボタン（Change Language and Restart）を押すだけで日本語になります。</p>
+
+<p>案内が出なかったときは、ふつうのVSCodeと同じ手順でできます。</p>
+
+<ol>
+  <li>左端のアイコンが並んだ列（アクティビティバー）で、四角が4つ並んだアイコン（拡張機能 / Extensions）をクリック</li>
+  <li>検索ボックスに <code>Japanese</code> と入力</li>
+  <li>「Japanese Language Pack for Visual Studio Code」の Install をクリック</li>
+  <li>右下に出る Change Language and Restart をクリック</li>
+</ol>
+
+<p>ここから先の説明は日本語表示を前提にします。もし日本語にできなくても、下の表で置きかえて読めば進められます。</p>
+
+<table>
+  <thead>
+    <tr><th>日本語表示</th><th>英語表示</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>エクスプローラー</td><td>Explorer</td></tr>
+    <tr><td>新しいファイル</td><td>New File</td></tr>
+    <tr><td>ソース管理</td><td>Source Control</td></tr>
+    <tr><td>変更</td><td>Changes</td></tr>
+    <tr><td>コミットしてプッシュ</td><td>Commit &amp; Push</td></tr>
+  </tbody>
+</table>
+
+<!-- TODO: スクリーンショット：右下に出る日本語化の案内、または拡張機能でJapanese Language Packを入れる画面 -->
+
+<div class="callout note">
+  <div class="title">名前の設定はいりません</div>
+  <p>ふつうのGitでは最初に「自分の名前とメールアドレス」を設定しますが、ブラウザ版はGitHubにログインした状態で動いているので、その設定はいりません。記録には自動であなたのGitHubの名前がつきます。</p>
+</div>
+
+<hr>
+
+<h2 id="step5">STEP 5：ホームページの中身を書く</h2>
+
+<h3>5-1. ファイルを作る</h3>
+<ol>
+  <li>VSCodeの左側（エクスプローラー）で、フォルダ名の横の新しいファイルアイコンをクリック</li>
+  <li>ファイル名を <code>index.html</code> にして Enter</li>
+</ol>
+
+<div class="callout important">
+  <div class="title">名前は必ず index.html</div>
+  <p>ウェブの世界では、<code>index.html</code> が「そのフォルダの表紙」という決まりになっています。<code>Index.html</code> や <code>index.HTML</code>、<code>インデックス.html</code> ではダメです。全部半角小文字で入れてください。</p>
+</div>
+
+<!-- TODO: スクリーンショット：github.devのエクスプローラーでindex.htmlを新規作成しているところ -->
+
+<h3>5-2. 中身を書く</h3>
+
+<p>下のコードを、まるごとコピーして貼り付けてください。</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;はじめてのホームページ&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      font-family: sans-serif;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 32px 20px;
+      line-height: 1.8;
+      color: #222;
+    }
+    h1 {
+      border-bottom: 3px solid #4a9;
+      padding-bottom: 8px;
+    }
+    .card {
+      background: #f4f7f6;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 24px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;はじめてのホームページ&lt;/h1&gt;
+  &lt;p&gt;これは自分で作って、自分で公開したページです。&lt;/p&gt;
+
+  &lt;div class="card"&gt;
+    &lt;h2&gt;好きなもの&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;ここに好きなものを書く&lt;/li&gt;
+      &lt;li&gt;もう1つ書く&lt;/li&gt;
+      &lt;li&gt;さらに書く&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+
+  &lt;p&gt;作った日：ここに今日の日付を書く&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<p>貼り付けたら Ctrl + S で保存します。</p>
+
+<div class="callout warning">
+  <div class="title">「保存」しただけでは、まだGitHubに入っていません</div>
+  <p>ブラウザ版VSCodeでの「保存」は、いま使っているブラウザの中に一時的にとっておくだけです。GitHubに入るのは、次のSTEP 6で<strong>コミット</strong>したときです。</p>
+  <p>学校のパソコンは、電源を切ると中身が消える設定になっていることがあります。<strong>授業の終わりには必ずSTEP 6のコミットまでやってください。</strong>コミットしていない分は消えてしまうかもしれません。</p>
+</div>
+
+<h3>5-3. 自分の言葉に書きかえる</h3>
+
+<p>ここが一番おもしろいところです。次を自由に変えてみてください。</p>
+
+<ul>
+  <li><code>&lt;h1&gt;</code> の中の文字 → ページの大見出し</li>
+  <li><code>&lt;li&gt;</code> の中の文字 → 箇条書きの1行。行を増やしても減らしてもOK</li>
+  <li><code>&lt;title&gt;</code> の中の文字 → ブラウザのタブに出る名前</li>
+  <li><code>#4a9</code> の部分 → 線の色。<code>#e57</code> や <code>#59c</code> などに変えると色が変わります</li>
+  <li>「ここに今日の日付を書く」 → 実際の日付</li>
+</ul>
+
+<h3>5-4. 見た目を確認したいとき</h3>
+
+<p>ブラウザ版VSCodeは、パソコンの中にファイルを置いていないので、「ダブルクリックして開く」ができません。確認のしかたは２つあります。</p>
+
+<ul>
+  <li><strong>公開してから見る（おすすめ）</strong>：STEP 7まで進めて一度公開すると、あとはコミットするたびに1〜2分で公開ページが更新されます。ふだんはこれで十分です</li>
+  <li><strong>今すぐ見る</strong>：エクスプローラーの <code>index.html</code> を右クリック → ダウンロード。パソコンの「ダウンロード」フォルダに入ったファイルをダブルクリックすると、ブラウザで開けます。ただし、これは「そのときのコピー」なので、書きかえたらもう一度ダウンロードが必要です</li>
+</ul>
+
+<hr>
+
+<h2 id="step6">STEP 6：コミットしてGitHubに保存する</h2>
+
+<p>書いたファイルを、GitHubに正式に記録します。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>VSCodeの左端のアイコン列で、枝が分かれたようなアイコン（ソース管理）をクリック</li>
+  <li>「変更」の中に <code>index.html</code> が出ています。ファイル名の上にマウスを乗せて、+ をクリック
+    <ul><li>→ これがステージ。「今回記録するのはこれです」と選ぶ作業です</li></ul>
+  </li>
+  <li>上のメッセージ入力欄に、何をしたかを書く
+    <ul><li>例：<code>最初のページを作った</code></li></ul>
+  </li>
+  <li>コミットしてプッシュ ボタンをクリック
+    <ul><li>→ これがコミット。「この時点の記録」がGitHubに保存されます</li></ul>
+  </li>
+</ol>
+
+<p>ボタンを押すと画面が一瞬読み込み直されて、「変更」の中が空になります。これで完了です。</p>
+
+<!-- TODO: スクリーンショット：github.devのソース管理で、メッセージを書いて「コミットしてプッシュ」を押すところ -->
+
+<h3>ふつうのVSCodeとのちがい</h3>
+
+<table>
+  <thead>
+    <tr><th>作業</th><th>ふつうのVSCode</th><th>ブラウザ版VSCode</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>ステージ（+）</td><td>送るファイルを選ぶ</td><td>同じ</td></tr>
+    <tr><td>コミット</td><td>パソコンの中に記録を作る</td><td>GitHubに直接記録を作る</td></tr>
+    <tr><td>同期（プッシュ）</td><td>GitHubに送る</td><td>いらない。コミットと同時に終わっている</td></tr>
+  </tbody>
+</table>
+
+<p>ブラウザでGitHubのリポジトリのページを開いてみてください。<code>index.html</code> が増えていれば成功です。<br>
+（アドレスバーの <code>github.dev</code> を <code>github.com</code> に戻すと、いつものリポジトリのページに戻れます）</p>
+
+<h3>つまずきポイント</h3>
+<ul>
+  <li>コミットのボタンが押せない → メッセージが空です。何か書いてください</li>
+  <li>「変更」に何も出てこない → まだファイルを保存していないか、書きかえがありません。Ctrl + S を押してみてください</li>
+  <li>前回書いたものが見当たらない → コミットしないまま閉じた分は、そのパソコンのそのブラウザの中にしかありません。同じパソコンならソース管理の「変更」に残っていることがあります。別のパソコンからは見えないので、コミットしたところからやり直してください</li>
+</ul>
+
+<hr>
+
+<h2 id="step7">STEP 7：GitHub Pagesで世界に公開する</h2>
+
+<p>ここまでで、ファイルはGitHubに置いてあります。でもまだ「ホームページ」にはなっていません。<br>
+最後に、公開のスイッチを入れます。</p>
+
+<h3>やること</h3>
+<ol>
+  <li>ブラウザでリポジトリのページ（<code>github.com</code> のほう）を開く</li>
+  <li>上のタブの Settings をクリック</li>
+  <li>左のメニューの「Code, planning, and automation」の中の Pages をクリック</li>
+  <li>「Build and deployment」の Source で Deploy from a branch を選ぶ</li>
+  <li>Branch のところで main を選び、フォルダは / (root) のまま</li>
+  <li>Save をクリック</li>
+</ol>
+
+<p>これで完了です。</p>
+
+<figure><img src="../github-pages/images/img-164655.png" alt="GitHub PagesのBuild and deployment設定" loading="lazy"></figure>
+
+<h3>URLを確認する</h3>
+
+<p>保存して少し待ってから、同じPagesの画面を再読み込みしてください。上のほうにURLが表示されます。</p>
+
+<pre><code>https://（グループの名前）.github.io/（作ったフォルダの名前）/</code></pre>
+
+<div class="callout warning">
+  <div class="title">すぐには表示されません</div>
+  <p>公開の準備には数分（長いと10分ほど）かかります。開いて「404 Not Found」と出ても失敗ではありません。5分ほど待ってから、もう一度読み込んでください。</p>
+  <p>何度も試しても404のままなら、<code>index.html</code> というファイル名が正しいか（大文字が混ざっていないか）を確認してください。ここが原因の9割です。</p>
+</div>
+
+<p>表示されたら、そのURLを自分のスマホに送ってみてください。</p>
+
+<hr>
+
+<h2 id="step8">STEP 8：直して、更新する</h2>
+
+<p>公開したあとの直し方も覚えておきましょう。これがふだんの作業です。</p>
+
+<ol>
+  <li>リポジトリのページで <kbd>.</kbd> を押して、ブラウザ版VSCodeを開く</li>
+  <li><code>index.html</code> を直して Ctrl + S</li>
+  <li>ソース管理を開いて + → メッセージを書く → コミットしてプッシュ</li>
+  <li>1〜2分待って、公開URLを再読み込み</li>
+</ol>
+
+<p>STEP 1〜3と7はもうやる必要がありません。<br>
+どのパソコンからでも、Chromeで GitHub にログインすれば、いつでも続きから作業できます。これがブラウザ版のいいところです。</p>
+
+<hr>
+
+<h2 id="appendix1">おまけ：VSCodeを使わずGitHubの画面だけで書く方法</h2>
+
+<p>学校のネットワークで <code>github.dev</code> が開けないときや、もっとかんたんにすませたいときは、GitHubのページ上で直接ファイルを作ることもできます。</p>
+
+<h3>新しいファイルを作る</h3>
+<ol>
+  <li>リポジトリのページを開く</li>
+  <li>緑色の Code ボタンの左にある Add file → Create new file をクリック</li>
+  <li>上の入力欄にファイル名 <code>index.html</code> を入れる</li>
+  <li>大きな入力欄にSTEP 5のコードを貼り付ける</li>
+  <li>右上の Commit changes... をクリック</li>
+  <li>出てきた画面でもう一度 Commit changes をクリック</li>
+</ol>
+
+<h3>あるファイルを直す</h3>
+<ol>
+  <li>リポジトリのページで <code>index.html</code> をクリック</li>
+  <li>右上のえんぴつのアイコン（Edit this file）をクリック</li>
+  <li>直して、Commit changes... → Commit changes</li>
+</ol>
+
+<!-- TODO: スクリーンショット：Add file → Create new file の画面と、Commit changesボタン -->
+
+<p>やっていることはSTEP 6と同じ「コミット」です。ただ、色分けや入力の補助がないので、長いコードを書くならブラウザ版VSCodeのほうが楽です。</p>
+
+<hr>
+
+<h2 id="appendix2">おまけ：Gitはどこに行ったの？</h2>
+
+<p>もう一方の手順書では、パソコンにGitというソフトを入れました。この手順書ではひとことも出てきません。でも、Gitがなくなったわけではありません。</p>
+
+<p>Gitは<strong>GitHubのサーバーの中で動いています</strong>。ふつうのやり方では「自分のパソコンのGit」と「GitHubのGit」の2か所に記録があって、その間をプッシュで運んでいました。ブラウザ版では、自分のパソコン側をなくして、GitHub側のGitに直接書きこんでいるのです。</p>
+
+<table>
+  <thead>
+    <tr><th></th><th>ふつうのやり方</th><th>ブラウザだけ版</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>コードを書く場所</td><td>自分のパソコン</td><td>ブラウザ（github.dev）</td></tr>
+    <tr><td>記録（コミット）が作られる場所</td><td>自分のパソコン</td><td>GitHub</td></tr>
+    <tr><td>GitHubに送る（プッシュ）</td><td>必要</td><td>いらない</td></tr>
+    <tr><td>ネットがなくても作業できる</td><td>できる</td><td>できない</td></tr>
+    <tr><td>インストール</td><td>GitとVSCode</td><td>なし</td></tr>
+  </tbody>
+</table>
+
+<p>コミット、リポジトリ、GitHub Pagesといった言葉はどちらでも同じです。この手順書で覚えたことは、いつかインストールできるパソコンを手に入れたとき、そのまま役に立ちます。そのときは<a href="../github-pages/#step4">もう一方の手順書のSTEP 4</a>から読んでください。</p>
+
+<footer>
+  <p><a href="../">トップページに戻る</a> ／ <a href="https://github.com/kinoatj/digital-innovator">GitHubリポジトリ</a></p>
+</footer>
+
+</div>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="画像の拡大表示">
+  <button class="close" type="button" aria-label="閉じる">&times;</button>
+  <img alt="">
+  <div class="caption"></div>
+</div>
+
+<script type="module" src="../github-pages/lightbox.js"></script>
+
+</body>
+</html>

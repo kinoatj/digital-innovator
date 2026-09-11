@@ -57,6 +57,26 @@ header.hero h1 {
   text-shadow: 0 1px 8px rgba(0,0,0,.22);
 }
 header.hero p { margin: 0; opacity: .94; }
+header.hero h1 small {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: .55em;
+  font-weight: normal;
+  opacity: .9;
+}
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  text-align: center;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-bottom-width: 3px;
+  border-radius: 5px;
+  background: #fff;
+  font-family: "SFMono-Regular", Consolas, "Courier New", monospace;
+  font-size: .9em;
+  color: #0f3a60;
+}
 
 h2 {
   position: relative;
