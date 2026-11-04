@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VRMを表示してみよう</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    canvas { display: block; }
+    p { position: absolute; top: 0; left: 16px; }
+  </style>
+
+  <!-- 使用するライブラリの名前とURLを指定します。 -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+        "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3.5.5/lib/three-vrm.module.min.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <p id="message">モデルを読み込んでいます…</p>
+
+  <!-- 同じフォルダーに「てすと.vrm」を置き、Live Serverなどで開いてください。 -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { VRMLoaderPlugin } from '@pixiv/three-vrm';
+
+    // 1. モデルを置く空間（シーン）を作ります。
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xeaf1f5);
+
+    // 2. カメラを置きます。位置は「左右・高さ・奥行き」の順です。
+    const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, -0.5, 2.2);
+
+    // 3. 3Dの空間を画面に描くレンダラーを作ります。
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // 4. モデルを照らすライトを置きます。
+    const light = new THREE.DirectionalLight(0xffffff, 3);
+    light.position.set(1, 2, 3);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+    // 5. マウスでカメラを動かせるようにします。
+    const controls = new OrbitControls(camera, renderer.domElement);
+    // このモデルの中央の高さ（-0.5）を見るようにします。
+    controls.target.set(0, -0.5, 0);
+    controls.update();
+
+    // 6. VRMファイルを読み込み、シーンに追加します。
+    const loader = new GLTFLoader();
+    loader.register((parser) => new VRMLoaderPlugin(parser));
+    const message = document.querySelector('#message');
+
+    try {
+      const gltf = await loader.loadAsync('./てすと.vrm');
+      const vrm = gltf.userData.vrm;
+      scene.add(vrm.scene);
+      message.textContent = 'ドラッグで回転・ホイールで拡大縮小';
+
+      // 7. 頭と腕の骨（ボーン）を取り出して、少しずつ動かします。
+      const head = vrm.humanoid.getNormalizedBoneNode('head');
+      const leftArm = vrm.humanoid.getNormalizedBoneNode('leftUpperArm');
+      const rightArm = vrm.humanoid.getNormalizedBoneNode('rightUpperArm');
+      const clock = new THREE.Clock();
+      let time = 0;
+
+      renderer.setAnimationLoop(() => {
+        const delta = Math.min(clock.getDelta(), 0.05);
+        time += delta; // 動き始めてからの時間を足していきます。
+
+        // Math.sinは -1〜1 をなめらかに行き来する値です。
+        // 話す時間と、少し休む時間を作ります（talkは0〜1）。
+        const talk = Math.max(0, Math.sin(time * 1.5));
+
+        // 話しながら軽くうなずき、首を少し傾けます。
+        head.rotation.x = Math.sin(time * 5) * 0.08 * talk;
+        head.rotation.z = Math.sin(time * 1.2) * 0.04;
+
+        // 腕を下げた姿勢から、小さく身振りをします。
+        // 左右のタイミングをずらすと、会話らしい動きになります。
+        leftArm.rotation.z = -1 + Math.sin(time * 2) * 0.2 * talk;
+        rightArm.rotation.z = 1 + Math.sin(time * 2 + 2) * 0.3 * talk;
+
+        // 「あ」の口を0（閉じる）〜1（開く）の範囲で動かします。
+        const mouth = Math.abs(Math.sin(time * 12)) * 0.6 * talk;
+        vrm.expressionManager.setValue('aa', mouth);
+
+        vrm.update(delta); // ポーズ・口の形・髪などの揺れを反映します。
+        renderer.render(scene, camera);
+      });
+    } catch (error) {
+      message.textContent = '読み込めませんでした。ファイル名とLive Serverの起動を確認してください。';
+      console.error(error);
+    }
+
+    // ウィンドウの大きさが変わったら、表示サイズも合わせます。
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
