@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>住所から地図を表示</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    body { font-family: sans-serif; max-width: 760px; margin: 32px auto; padding: 0 16px; line-height: 1.6; }
+    #map { width: 100%; height: 350px; }
+  </style>
+</head>
+<body>
+  <h1>住所から地図を表示</h1>
+  <p>福井県立敦賀高等学校：福井県敦賀市松葉町2-1</p>
+  <p id="message">住所を調べています…</p>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // 地図を表示する関数。住所・地図の場所・説明文の場所を渡します。
+    // 同じ地図の場所には、一度だけこの関数を呼び出します。
+    async function showCompanyMap(address, mapElement, messageElement) {
+      messageElement.textContent = "住所を調べています…";
+
+      if (!address || !address.trim()) {
+        messageElement.textContent = "住所が登録されていません。";
+        return;
+      }
+
+      try {
+        // ① 住所から緯度・経度を調べる
+        const { normalize } = await import(
+          "https://esm.sh/@geolonia/normalize-japanese-addresses@3.1.3"
+        );
+        const result = await normalize(address, { level: 8 });
+        const point = result.point;
+
+        if (!point || point.level < 3) {
+          messageElement.textContent = "この住所の位置を調べられませんでした。";
+          return;
+        }
+
+        // ② 調べた位置を中心に地図を作る
+        const position = [point.lat, point.lng];
+        const map = L.map(mapElement).setView(position, 16);
+        L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
+          maxZoom: 18,
+          attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>'
+        }).addTo(map);
+
+        // ③ 調べた位置にピンを立てる
+        L.marker(position).addTo(map);
+        messageElement.textContent = point.level === 8
+          ? "住所から調べた位置です。正確な場所は確認してください。"
+          : "町・丁目の代表地点です。正確な場所とは異なります。";
+      } catch (error) {
+        messageElement.textContent = "地図を表示できませんでした。";
+        console.error(error);
+      }
+    }
+
+    // ガクマチの企業データと同じように、名前と住所を用意します。
+    const company = {
+      name: "福井県立敦賀高等学校",
+      address: "福井県敦賀市松葉町2-1"
+    };
+
+    const mapElement = document.getElementById("map");
+    const messageElement = document.getElementById("message");
+
+    // 企業の住所を渡して、地図を表示します。
+    showCompanyMap(company.address, mapElement, messageElement);
+  </script>
+</body>
+</html>
